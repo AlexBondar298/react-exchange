@@ -42,8 +42,10 @@ function App() {
         </div>
 
         <div className="headerRight">
-          <img src="/img/nbu.svg" alt="logo" />
-          <ul>
+          <a href="https://bank.gov.ua/" title="Перейти на сайт НБУ" target="blank">
+            <img src="/img/nbu.svg" alt="NBU" />
+          </a>
+          <ul title="Офіційний курс валют НБУ">
             <li style={{marginRight:30}}>
               <div className="currencyItem">
                 <span className="currencyName">USD</span> 
@@ -71,7 +73,7 @@ function App() {
           </ul>
 
         </div>
-        
+
       </header>
 
       <div className="content">
