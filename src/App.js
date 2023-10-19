@@ -1,32 +1,34 @@
 import { useEffect, useState } from "react"
 
+import { CurrencyItem } from "./components/CurrencyItem"
+import { CurrencyExchange } from "./components/CurrencyExchange"
+
 function App() {
   const [usd, setUsd] = useState("")
   const [eur, setEur] = useState("")
   const [uah, setUah] = useState("")
   const [cash, setCash] = useState("0.00")
-  const [rezult, setRezult] = useState("")
-  const [value, setValue] = useState("UAH");
-  const [value2, setValue2] = useState("UAH");
+  const [result, setResult] = useState("")
+  const [currencySale, setCurrencySale] = useState("UAH");
+  const [currencyPurchase, setCurrencyPurchase] = useState("UAH");
 
   useEffect(() => {
-    if (value === "UAH") setRezult((+cash*1).toFixed(2))
-    if (value === "USD") setRezult((+usd*+cash).toFixed(2))
-    if (value === "EUR") setRezult((+eur*+cash).toFixed(2))
-    if (value2 === "USD") setRezult((prev) => (+prev/+usd).toFixed(2))
-    if (value2 === "EUR") setRezult((prev) => (+prev/+eur).toFixed(2))
-  }, [cash, value, uah, usd, eur, value2])
+    if (currencySale === "UAH") setResult((+cash*1).toFixed(2))
+    if (currencySale === "USD") setResult((+usd*+cash).toFixed(2))
+    if (currencySale === "EUR") setResult((+eur*+cash).toFixed(2))
+    if (currencyPurchase === "USD") setResult((prev) => (+prev/+usd).toFixed(2))
+    if (currencyPurchase === "EUR") setResult((prev) => (+prev/+eur).toFixed(2))
+  }, [cash, currencySale, uah, usd, eur, currencyPurchase])
   
   useEffect(() => {
-    async function kurs(){
+    async function rate(){
       const res = await fetch("https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?json")
       const data = await res.json()
       setUsd((data.find(elem => elem.txt === "Долар США").rate))
       setEur((data.find(elem => elem.txt === "Євро").rate))
     }
-    kurs()
+    rate()
   }, [])
-  console.log(usd)
 
   return (
     <div className="wrapper">
@@ -47,29 +49,11 @@ function App() {
           </a>
           <ul title="Офіційний курс валют НБУ">
             <li style={{marginRight:30}}>
-              <div className="currencyItem">
-                <span className="currencyName">USD</span> 
-                <span className="currencyValue">
-                  <span>{Number(usd).toFixed(2)}</span>
-                  <svg width="5" height="5" viewBox="0 0 5 5" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M5 4.5L-6.99382e-07 4.5L2.5 0.5L5 4.5Z" fill="#00B75F"></path>
-                  </svg>
-                </span> 
-              </div>
+              <CurrencyItem currencyValue={usd}/>
             </li>
-
             <li style={{marginRight:30}}>
-              <div className="currencyItem">
-                <span className="currencyName">EUR</span> 
-                <span className="currencyValue">
-                  <span> {Number(eur).toFixed(2)}</span>
-                  <svg width="5" height="5" viewBox="0 0 5 5" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M5 4.5L-6.99382e-07 4.5L2.5 0.5L5 4.5Z" fill="#00B75F"></path>
-                  </svg>
-                </span> 
-              </div>
+              <CurrencyItem currencyValue={eur}/>
             </li>
-
           </ul>
 
         </div>
@@ -78,29 +62,19 @@ function App() {
 
       <div className="content">
 
-        <div className="currency_1">
-          <fieldset>
-            <legend>Продаж </legend>
-            Сума <input value={cash} onChange={event => setCash(event.target.value)}/>
-            Валюта продажу <select value={value} onChange={event => setValue(event.target.value)}>
-              <option value="UAH"> UAH </option>
-              <option value="USD"> USD </option>
-              <option value="EUR"> EUR </option>
-            </select>
-          </fieldset>
-        </div>
+          <CurrencyExchange 
+            cash={cash}
+            setCash={setCash}
+            currencySale={currencySale}
+            setCurrencySale={setCurrencySale}
+          />
 
-        <div className="currency_2">
-          <fieldset>
-              <legend>Результат </legend>
-              Сума <input value={rezult} onChange={event => setUah(event.target.value)}/>
-              Валюта купівлі <select value={value2} onChange={event => setValue2(event.target.value)}>
-                <option value="UAH"> UAH </option>
-                <option value="USD"> USD </option>
-                <option value="EUR"> EUR </option>
-              </select>
-            </fieldset>
-        </div>
+          <CurrencyExchange 
+            cash={result}
+            setCash={setUah}
+            currencySale={currencyPurchase}
+            setCurrencySale={setCurrencyPurchase}
+          />
 
       </div>
 
